@@ -44,7 +44,7 @@ class FireFighter(dm_env.Environment):
     self._reset_next_step = False
 
     self.burned = self.inital_fire.copy()
-    self.defended = np.array([False]*adj_mat.shape[0], dtype=np.bool)
+    self.defended = np.array([False]*self.adj_mat.shape[0], dtype=np.bool)
     
     self.graph = nx.convert_matrix.from_numpy_matrix(self.adj_mat)
     self.nodes = self.graph.nodes()
@@ -76,8 +76,8 @@ class FireFighter(dm_env.Environment):
     
     if self._reset_next_step:
       return dm_env.termination(reward=0., observation=self._observation())
-    else:
-      return dm_env.transition(reward=-1., observation=self._observation())
+    
+    return dm_env.transition(reward=-1., observation=self._observation())
 
   def observation_spec(self):
     """Returns the observation spec."""
