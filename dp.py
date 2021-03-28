@@ -14,6 +14,7 @@ def get_all_states(env, agent):
     states = []
     
     def get_all_states(env, agent, timestep):
+        nonlocal states
         begin_state = timestep.observation[1:]
         if begin_state not in states:
             states.append(begin_state)
