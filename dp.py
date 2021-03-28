@@ -13,7 +13,7 @@ from agents.policy_iter import policy_iter_agent
 def get_all_states(env, agent):
     states = []
     
-    def get_all_states(env, agent, timestep):
+    def _get_all_states(env, agent, timestep):
         nonlocal states
         begin_state = timestep.observation[1:]
         if begin_state not in states:
@@ -27,7 +27,7 @@ def get_all_states(env, agent):
                     states += get_all_states(env, agent, timestep)
         return states
     
-    return get_all_states(env, agent, env.reset())
+    return _get_all_states(env, agent, env.reset())
 
 def policy_evaluation(env, agent, value_func: dict):        
     while True:
