@@ -89,10 +89,10 @@ class FireFighter(dm_env.Environment):
                 shape=self.adj_mat.shape, dtype=np.bool, name="adjacency_matrix"
             ),
             specs.Array(
-                shape=(self.adj_mat.shape[0],), dtype=np.bool, name="adjacency_matrix"
+                shape=(self.adj_mat.shape[0],), dtype=np.bool, name="burned"
             ),
             specs.Array(
-                shape=(self.adj_mat.shape[0],), dtype=np.bool, name="adjacency_matrix"
+                shape=(self.adj_mat.shape[0],), dtype=np.bool, name="defended"
             ),
         )
 
@@ -104,3 +104,6 @@ class FireFighter(dm_env.Environment):
 
     def _observation(self):
         return (self.adj_mat.copy(), self.burned.copy(), self.defended.copy())
+
+    def set_state(self, state):
+        self.burned, self.defended = state
