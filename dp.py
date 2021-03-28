@@ -86,10 +86,10 @@ if __name__ == '__main__':
     parser.add_argument('--write_file', type=str, required=True, help='File to write pickled value function and policy to')
     args = parser.parse_args()
 
-    env = FireFighter(config['adj_mat'], config['initial_fire'], config['burn_prob'])
-    agent = policy_iter_agent(config['n_defend'])
+    burning_graph_env = FireFighter(config['adj_mat'], config['initial_fire'], config['burn_prob'])
+    ff_agent = policy_iter_agent(config['n_defend'])
     
-    value_func = policy_iteration(env, agent)
+    learned_value_func = policy_iteration(burning_graph_env, ff_agent)
     
     with open(args.write_file, 'w+') as f:
-        pickle.dump((value_func, agent.policy), f)
+        pickle.dump((learned_value_func, ff_agent.policy), f)
