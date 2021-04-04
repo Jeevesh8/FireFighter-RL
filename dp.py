@@ -9,7 +9,7 @@ from networkx import grid_graph, to_numpy_matrix
 from config import config
 from env import FireFighter
 from agents.policy_iter import policy_iter_agent
-
+from agents.utils import numpy_dict
 
 def get_all_states(env, agent):
     states = []
@@ -25,7 +25,7 @@ def get_all_states(env, agent):
                 timestep = env.step(action)
                 if not timestep.last():
                     state = timestep.observation[1:]
-                    states += get_all_states(env, agent, timestep)
+                    states += _get_all_states(env, agent, timestep)
         return states
 
     return _get_all_states(env, agent, env.reset())
@@ -70,7 +70,10 @@ def policy_improvement(env, agent, value_func: dict):
 
 def policy_iteration(env, agent):
     states = get_all_states(env, agent)
-    value_func = {state: np.random.randint(-3, 0) for state in states}
+    value_func = numpy_dict()
+    
+    for state in states:
+        value_func[state] = np.random.randint(-3, 0)
 
     for state in states:
         env.set_state(state)
