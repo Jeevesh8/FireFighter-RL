@@ -89,12 +89,8 @@ class FireFighter(dm_env.Environment):
             specs.Array(
                 shape=self.adj_mat.shape, dtype=np.bool, name="adjacency_matrix"
             ),
-            specs.Array(
-                shape=(self.adj_mat.shape[0],), dtype=np.bool, name="burned"
-            ),
-            specs.Array(
-                shape=(self.adj_mat.shape[0],), dtype=np.bool, name="defended"
-            ),
+            specs.Array(shape=(self.adj_mat.shape[0],), dtype=np.bool, name="burned"),
+            specs.Array(shape=(self.adj_mat.shape[0],), dtype=np.bool, name="defended"),
         )
 
     def action_spec(self):
