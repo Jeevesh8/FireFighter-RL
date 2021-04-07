@@ -5,6 +5,7 @@ import pickle
 import random
 
 from networkx import grid_graph, to_numpy_matrix
+import numpy as np
 
 from config import config
 from env import FireFighter
@@ -17,7 +18,16 @@ def get_all_states(env, agent):
     def _get_all_states(env, agent, timestep):
         nonlocal states
         begin_state = timestep.observation[1:]
-        if begin_state not in states:
+        
+        visited = False
+        for state in states:
+            if (np.all(state[0]==begin_state[0]) and 
+                np.all(state[1]==begin_state[1])):
+                
+                visited=True
+                break
+        
+        if not visited:
             states.append(begin_state)
             actions = agent.get_all_actions(timestep.observation)
             for action in actions:
@@ -80,6 +90,8 @@ def policy_iteration(env, agent):
         agent.policy[state] = random.choice(agent.get_all_actions(env._observation()))
 
     while True:
+        value_func = policy_evaluation(env, agent, value_func)
+        print("Updated value function: ", value_func)
         value_func, policy_stable = policy_improvement(env, agent, value_func)
         if policy_stable:
             break

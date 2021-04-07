@@ -8,7 +8,7 @@ def hash_bool_array(arr):
     Returns:
         A tuple: (packed numpy array, shape of original array)
     """
-    return tuple(np.packbits(np.reshape(arr, (-1)))), arr.shape
+    return tuple(np.packbits(np.reshape(np.copy(arr), (-1)))), arr.shape
 
 def revert_hash(hash):
     """Computes the array given the hash.
@@ -18,7 +18,7 @@ def revert_hash(hash):
         np.ndarray, whose hash is the one provided as argument.
     """
     total_size = reduce(lambda x,y: x*y, hash[1])
-    return np.reshape( np.unpackbits(np.array(hash[0]))[:total_size], hash[1])
+    return np.reshape( np.unpackbits(np.array(np.copy(hash[0])))[:total_size], hash[1])
 
 class numpy_dict(dict):
     """Implements a dictionary with numpy boolean arrays as its keys.

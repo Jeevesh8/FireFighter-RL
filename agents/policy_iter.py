@@ -12,12 +12,12 @@ class policy_iter_agent():
     
     def _get_all_actions(self, defendable, n_defend)->List[np.ndarray]:
         if n_defend<=0 or n_defend>=np.sum(defendable):
-            return [defendable.copy()]
+            return [np.copy(defendable)]
         
         for (i,elem) in enumerate(defendable):
             if elem:
-                return ([np.concatenate([0]*i+[0], elem]) for elem in self._get_all_actions(defendable[i+1:], n_defend)]+
-                        [np.concatenate([0]*i+[1], elem]) for elem in self._get_all_actions(defendable[i+1:], n_defend-1)])
+                return ([np.concatenate([[0]*i+[0], elem]) for elem in self._get_all_actions(defendable[i+1:], n_defend)]+
+                        [np.concatenate([[0]*i+[1], elem]) for elem in self._get_all_actions(defendable[i+1:], n_defend-1)])
             else:
                 continue
         

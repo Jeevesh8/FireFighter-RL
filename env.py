@@ -66,7 +66,8 @@ class FireFighter(dm_env.Environment):
 
         to_burn = np.random.uniform(size=burnable.shape) < self.burn_prob
 
-        self.burned[np.asarray(np.logical_and(burnable, to_burn), dtype=np.bool)] = True
+        burn_idx = np.asarray(np.logical_and(burnable, to_burn), dtype=np.bool)
+        self.burned[np.reshape(burn_idx, -1)] = True
 
     def step(self, action: np.ndarray):
         """Updates the environment according to the action."""
