@@ -29,17 +29,17 @@ def get_all_states(env, agent):
         
         if not visited:
             states.append(begin_state)
+            if timestep.last():
+                env.reset()
+                return
             actions = agent.get_all_actions(timestep.observation)
             for action in actions:
                 env.set_state(begin_state)
                 timestep = env.step(action)
-                if not timestep.last():
-                    state = timestep.observation[1:]
-                    states += _get_all_states(env, agent, timestep)
-        return states
-
-    return _get_all_states(env, agent, env.reset())
-
+                _get_all_states(env, agent, timestep)
+            
+    _get_all_states(env, agent, env.reset())
+    return states
 
 def policy_evaluation(env, agent, value_func: dict):
     while True:
