@@ -90,9 +90,9 @@ class FireFighter(dm_env.Environment):
             
             #Make a to_burn according to bits of to_burn
             j = 0
-            for i in range(to_burn.shape[0]):
-                if to_burn[i]==1:
-                    to_burn[i] = (num & (1<<j)) >> j
+            for i in range(to_burn.shape[1]):
+                if to_burn[0, i]==1:
+                    to_burn[0, i] = (num & (1<<j)) >> j
                     j += 1
             
             #burn vertices & add resultant timestep to timesteps_lis

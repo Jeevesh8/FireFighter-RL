@@ -25,11 +25,12 @@ def get_all_states(env, agent):
             if np.all(state[0] == begin_state[0]) and np.all(
                 state[1] == begin_state[1]
             ):
-
+                print("Encountered existing state!")
                 visited = True
                 break
 
         if not visited:
+            print("Found new state: ", begin_state)
             states.append(begin_state)
             if timestep.last():
                 env.reset()
