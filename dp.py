@@ -35,8 +35,8 @@ def get_all_states(env, agent):
             actions = agent.get_all_actions(timestep.observation)
             for action in actions:
                 env.set_state(begin_state)
-                for timestep in env.all_possible_env_states(action):
-                    _get_all_states(env, agent, timestep)
+                for possible_timestep in env.all_possible_env_states(action):
+                    _get_all_states(env, agent, possible_timestep)
             
     _get_all_states(env, agent, env.reset())
     return states
