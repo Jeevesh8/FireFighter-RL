@@ -87,7 +87,7 @@ class FireFighter(dm_env.Environment):
         else:
         
             #Loop over all possible to_burn
-            for num in range(2^np.sum(burnable)):
+            for num in range(2**np.sum(burnable)):
                 to_burn = burnable.copy()
                 
                 #Make a to_burn according to bits of to_burn

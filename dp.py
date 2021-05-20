@@ -50,7 +50,9 @@ def get_all_states(env, agent):
 
 
 def policy_evaluation(env, agent, value_func: numpy_dict, states:List[np.ndarray]):
+    j = 0
     while True:
+        print("Policy evaluation iteration: ", j)
         max_change = 0
         for state in states:
             old_value = value_func[state]
@@ -60,7 +62,7 @@ def policy_evaluation(env, agent, value_func: numpy_dict, states:List[np.ndarray
             if reward is not None:
                 value_func[state] = reward + value_func[next_state]
                 max_change = max(max_change, abs(value_func[state] - old_value))
-
+        j+=1
         if max_change < 0.1:
             break
     return value_func
@@ -82,7 +84,7 @@ def policy_improvement(env, agent, value_func: numpy_dict, states: List[np.ndarr
                     agent.policy[state] = action
                     max_val_func = reward + value_func[next_state]
 
-        if old_action != agent.policy[state]:
+        if np.any(old_action[0] != agent.policy[state][0]) or np.any(old_action[1] != agent.policy[state][1])):
             policy_stable = False
 
     return value_func, policy_stable
@@ -99,10 +101,12 @@ def policy_iteration(env, agent):
         env.set_state(state)
         agent.policy[state] = random.choice(agent.get_all_actions(env._observation()))
 
+    k=0
     while True:
         value_func = policy_evaluation(env, agent, value_func, states)
         print("Updated value function: ", value_func)
         value_func, policy_stable = policy_improvement(env, agent, value_func, states)
+        print("Policy evaluation iteration : ", k, " after policy evaluation. ")
         if policy_stable:
             break
 
