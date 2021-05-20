@@ -48,7 +48,7 @@ def get_all_states(env, agent):
     return states
 
 
-def policy_evaluation(env, agent, value_func: numpy_dict, states:List[np.ndarray]):
+def policy_evaluation(env, agent, value_func: numpy_dict, states: List[np.ndarray]):
     while True:
         max_change = 0
         for state in states:
