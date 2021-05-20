@@ -68,7 +68,7 @@ class FireFighter(dm_env.Environment):
 
         burn_idx = np.asarray(np.logical_and(burnable, to_burn), dtype=np.bool)
         self.burned[np.reshape(burn_idx, -1)] = True
-    
+
     def all_possible_env_states(self, action: np.ndarray):
         """Generator for all possible environment states after taking the given action."""
         self.defended = np.logical_or(self.defended, action)
@@ -81,26 +81,26 @@ class FireFighter(dm_env.Environment):
         self._reset_next_step = not np.any(burnable)
         if self._reset_next_step:
             yield dm_env.termination(reward=0.0, observation=self._observation())
-        
+
         else:
-        
-            #Loop over all possible to_burn
-            for num in range(2^np.sum(burnable)):
+
+            # Loop over all possible to_burn
+            for num in range(2 ^ np.sum(burnable)):
                 to_burn = burnable.copy()
-                
-                #Make a to_burn according to bits of to_burn
+
+                # Make a to_burn according to bits of to_burn
                 j = 0
                 for i in range(to_burn.shape[1]):
-                    if to_burn[0, i]==1:
-                        to_burn[0, i] = (num & (1<<j)) >> j
+                    if to_burn[0, i] == 1:
+                        to_burn[0, i] = (num & (1 << j)) >> j
                         j += 1
-                
-                #burn vertices & add resultant timestep to timesteps_lis
+
+                # burn vertices & add resultant timestep to timesteps_lis
                 burn_idx = np.asarray(np.logical_and(burnable, to_burn), dtype=np.bool)
                 self.burned[np.reshape(burn_idx, -1)] = True
                 yield dm_env.transition(reward=-1.0, observation=self._observation())
-                
-                #revert burns for checking other possible burns
+
+                # revert burns for checking other possible burns
                 self.burned[np.reshape(burn_idx, -1)] = False
 
     def step(self, action: np.ndarray):
@@ -123,12 +123,8 @@ class FireFighter(dm_env.Environment):
             specs.Array(
                 shape=self.adj_mat.shape, dtype=np.bool, name="adjacency_matrix"
             ),
-            specs.Array(
-                shape=(self.adj_mat.shape[0],), dtype=np.bool, name="burned"
-            ),
-            specs.Array(
-                shape=(self.adj_mat.shape[0],), dtype=np.bool, name="defended"
-            ),
+            specs.Array(shape=(self.adj_mat.shape[0],), dtype=np.bool, name="burned"),
+            specs.Array(shape=(self.adj_mat.shape[0],), dtype=np.bool, name="defended"),
         )
 
     def action_spec(self):
