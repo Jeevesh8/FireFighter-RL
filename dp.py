@@ -12,7 +12,7 @@ from config import config
 from env import FireFighter
 from agents.policy_iter import policy_iter_agent
 from agents.utils import numpy_dict
-
+from plotting_utils import visualize_graph
 
 def get_all_states(env, agent):
     states = []
@@ -74,6 +74,7 @@ def policy_improvement(env, agent, value_func: numpy_dict, states: List[np.ndarr
     for state in states:
         old_action = agent.policy[state]
         max_val_func = float("-inf")
+        env.set_state(state)
 
         for action in agent.get_all_actions(env._observation()):
             env.set_state(state)
@@ -114,7 +115,7 @@ def policy_iteration(env, agent):
         if policy_stable:
             break
         k += 1
-    return value_func
+    return value_func, states
 
 
 if __name__ == "__main__":
@@ -132,7 +133,15 @@ if __name__ == "__main__":
     )
     ff_agent = policy_iter_agent(config["n_defend"])
 
-    learned_value_func = policy_iteration(burning_graph_env, ff_agent)
+    learned_value_func, states = policy_iteration(burning_graph_env, ff_agent)
 
-    with open(args.write_file, "w+") as f:
-        pickle.dump((learned_value_func, ff_agent.policy), f)
+    with open(args.write_file, "wb+") as f:
+        pickle.dump(tuple((learned_value_func, ff_agent.policy, states, config)), f)
+    
+    print("-----------------------------Final Learned Policy for some states------------------------------")
+    for state in states[:5]:
+        print("In the state: ", state, " defend : ", ff_agent.policy[state])
+        print("Visualized state: ")
+        visualize_graph(config['adj_mat'], state[0], state[1])
+        print("State visualized after defending: ")
+        visualize_graph(config['adj_mat'], state[0], np.logical_or(state[1], ff_agent.policy[state]))
