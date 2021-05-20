@@ -26,30 +26,31 @@ def get_all_states(env, agent):
             if np.all(state[0] == begin_state[0]) and np.all(
                 state[1] == begin_state[1]
             ):
-                print("\t"*i+"Encountered existing state!", begin_state)
+                print("\t" * i + "Encountered existing state!", begin_state)
                 visited = True
                 break
 
         if not visited:
-            print("\t"*i+"Found new state: ", begin_state)
+            print("\t" * i + "Found new state: ", begin_state)
             states.append(begin_state)
             if timestep.last():
-                print("\t"*i+"Encountered last state!!", begin_state)
+                print("\t" * i + "Encountered last state!!", begin_state)
                 env.reset()
                 return
             actions = agent.get_all_actions(timestep.observation)
-            print("\t"*i+"All possible actions: ", actions)
+            print("\t" * i + "All possible actions: ", actions)
             for j, action in enumerate(actions):
                 env.set_state(begin_state)
                 for possible_timestep in env.all_possible_env_states(action):
-                    _get_all_states(env, agent, possible_timestep, i+1)
-                    print("\t"*i+"Checking next env stage for action: ", j)
+                    _get_all_states(env, agent, possible_timestep, i + 1)
+                    print("\t" * i + "Checking next env stage for action: ", j)
                 env.set_state(begin_state)
+
     _get_all_states(env, agent, env.reset())
     return states
 
 
-def policy_evaluation(env, agent, value_func: numpy_dict, states:List[np.ndarray]):
+def policy_evaluation(env, agent, value_func: numpy_dict, states: List[np.ndarray]):
     j = 0
     while True:
         print("Policy evaluation iteration: ", j)
@@ -62,7 +63,7 @@ def policy_evaluation(env, agent, value_func: numpy_dict, states:List[np.ndarray
             if reward is not None:
                 value_func[state] = reward + value_func[next_state]
                 max_change = max(max_change, abs(value_func[state] - old_value))
-        j+=1
+        j += 1
         if max_change < 0.1:
             break
     return value_func
@@ -86,7 +87,7 @@ def policy_improvement(env, agent, value_func: numpy_dict, states: List[np.ndarr
                         max_val_func = reward + value_func[next_state]
                 except KeyError:
                     print(next_state, states)
-                    assert 0==1
+                    assert 0 == 1
 
         if np.any(old_action != agent.policy[state]):
             policy_stable = False
@@ -105,12 +106,14 @@ def policy_iteration(env, agent):
         env.set_state(state)
         agent.policy[state] = random.choice(agent.get_all_actions(env._observation()))
 
-    k=0
+    k = 0
     while True:
         value_func = policy_evaluation(env, agent, value_func, states)
         print("Updated value function: ", value_func)
         value_func, policy_stable = policy_improvement(env, agent, value_func, states)
-        print("Policy evaluation iteration completed: ", k, " after policy evaluations. ")
+        print(
+            "Policy evaluation iteration completed: ", k, " after policy evaluations. "
+        )
         if policy_stable:
             break
         k += 1
