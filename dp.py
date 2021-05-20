@@ -3,6 +3,7 @@ import copy
 import math
 import pickle
 import random
+from typing import List
 
 from networkx import grid_graph, to_numpy_matrix
 import numpy as np
@@ -47,10 +48,10 @@ def get_all_states(env, agent):
     return states
 
 
-def policy_evaluation(env, agent, value_func: dict):
+def policy_evaluation(env, agent, value_func: numpy_dict, states:List[np.ndarray]):
     while True:
         max_change = 0
-        for state in value_func:
+        for state in states:
             old_value = value_func[state]
             env.set_state(state)
             timestep = env.step(agent.policy[state])
@@ -63,10 +64,10 @@ def policy_evaluation(env, agent, value_func: dict):
     return value_func
 
 
-def policy_improvement(env, agent, value_func: dict):
+def policy_improvement(env, agent, value_func: numpy_dict, states: List[np.ndarray]):
     policy_stable = True
 
-    for state in value_func:
+    for state in states:
         old_action = agent.policy[state]
         max_val_func = float("-inf")
 
@@ -96,9 +97,9 @@ def policy_iteration(env, agent):
         agent.policy[state] = random.choice(agent.get_all_actions(env._observation()))
 
     while True:
-        value_func = policy_evaluation(env, agent, value_func)
+        value_func = policy_evaluation(env, agent, value_func, states)
         print("Updated value function: ", value_func)
-        value_func, policy_stable = policy_improvement(env, agent, value_func)
+        value_func, policy_stable = policy_improvement(env, agent, value_func, states)
         if policy_stable:
             break
 
