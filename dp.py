@@ -84,7 +84,7 @@ def policy_improvement(env, agent, value_func: numpy_dict, states: List[np.ndarr
                     agent.policy[state] = action
                     max_val_func = reward + value_func[next_state]
 
-        if np.any(old_action[0] != agent.policy[state][0]) or np.any(old_action[1] != agent.policy[state][1])):
+        if np.any(old_action != agent.policy[state]):
             policy_stable = False
 
     return value_func, policy_stable
