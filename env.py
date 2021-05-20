@@ -143,3 +143,10 @@ class FireFighter(dm_env.Environment):
 
     def set_state(self, state):
         self.burned, self.defended = state[0].copy(), state[1].copy()
+
+        burnable = np.logical_and(
+            np.any(self.adj_mat[self.burned], axis=0),
+            np.logical_not(np.logical_or(self.defended, self.burned)),
+        )
+
+        self._reset_next_step = not np.any(burnable)
