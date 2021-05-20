@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def visualize_graph(adj_mat, burned, defended):
     g = nx.convert_matrix.from_numpy_matrix(adj_mat)
     node_color = np.where(burned, 1.0, 0.2)
