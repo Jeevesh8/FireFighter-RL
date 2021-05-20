@@ -80,9 +80,13 @@ def policy_improvement(env, agent, value_func: numpy_dict, states: List[np.ndarr
             timestep = env.step(action)
             reward, next_state = timestep.reward, timestep.observation[1:]
             if reward is not None:
-                if reward + value_func[next_state] > max_val_func:
-                    agent.policy[state] = action
-                    max_val_func = reward + value_func[next_state]
+                try:
+                    if reward + value_func[next_state] > max_val_func:
+                        agent.policy[state] = action
+                        max_val_func = reward + value_func[next_state]
+                except KeyError:
+                    print(next_state, states)
+                    assert 0==1
 
         if np.any(old_action != agent.policy[state]):
             policy_stable = False
@@ -106,10 +110,10 @@ def policy_iteration(env, agent):
         value_func = policy_evaluation(env, agent, value_func, states)
         print("Updated value function: ", value_func)
         value_func, policy_stable = policy_improvement(env, agent, value_func, states)
-        print("Policy evaluation iteration : ", k, " after policy evaluation. ")
+        print("Policy evaluation iteration completed: ", k, " after policy evaluations. ")
         if policy_stable:
             break
-
+        k += 1
     return value_func
 
 
