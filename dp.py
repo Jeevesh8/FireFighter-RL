@@ -33,9 +33,11 @@ def get_all_states(env, agent):
             print("Found new state: ", begin_state)
             states.append(begin_state)
             if timestep.last():
+                print("Encountered last state!!")
                 env.reset()
                 return
             actions = agent.get_all_actions(timestep.observation)
+            print("All possible actions: ", actions)
             for action in actions:
                 env.set_state(begin_state)
                 for possible_timestep in env.all_possible_env_states(action):
