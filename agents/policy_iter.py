@@ -15,7 +15,7 @@ class policy_iter_agent():
             return [np.copy(defendable)]
         
         elif  n_defend<=0:
-            return [np.zeros(defendable.shape)]
+            return [np.zeros(defendable.shape, dtype=np.bool)]
 
         for (i,elem) in enumerate(defendable):
             if elem:

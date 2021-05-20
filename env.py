@@ -71,6 +71,8 @@ class FireFighter(dm_env.Environment):
     
     def all_possible_env_states(self, action: np.ndarray):
         """Generator for all possible environment states after taking the given action."""
+        original_defended = self.defended.copy()
+
         self.defended = np.logical_or(self.defended, action)
 
         burnable = np.logical_and(
@@ -95,13 +97,15 @@ class FireFighter(dm_env.Environment):
                         to_burn[0, i] = (num & (1<<j)) >> j
                         j += 1
                 
-                #burn vertices & add resultant timestep to timesteps_lis
-                burn_idx = np.asarray(np.logical_and(burnable, to_burn), dtype=np.bool)
+                #burn vertices & yield timestep
+                burn_idx = np.asarray(to_burn, dtype=np.bool)
                 self.burned[np.reshape(burn_idx, -1)] = True
                 yield dm_env.transition(reward=-1.0, observation=self._observation())
                 
                 #revert burns for checking other possible burns
                 self.burned[np.reshape(burn_idx, -1)] = False
+        
+        self.defended = original_defended
 
     def step(self, action: np.ndarray):
         """Updates the environment according to the action."""
