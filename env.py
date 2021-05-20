@@ -70,7 +70,7 @@ class FireFighter(dm_env.Environment):
         self.burned[np.reshape(burn_idx, -1)] = True
     
     def all_possible_env_states(self, action: np.ndarray):
-        """Returns a list of all possible environment states after taking the given action."""
+        """Generator for all possible environment states after taking the given action."""
         self.defended = np.logical_or(self.defended, action)
 
         burnable = np.logical_and(
@@ -80,29 +80,28 @@ class FireFighter(dm_env.Environment):
 
         self._reset_next_step = not np.any(burnable)
         if self._reset_next_step:
-            return [dm_env.termination(reward=0.0, observation=self._observation())]
+            yield dm_env.termination(reward=0.0, observation=self._observation())
         
-        timesteps_lis = []
-
-        #Loop over all possible to_burn
-        for num in range(2^np.sum(burnable)):
-            to_burn = burnable.copy()
-            
-            #Make a to_burn according to bits of to_burn
-            j = 0
-            for i in range(to_burn.shape[1]):
-                if to_burn[0, i]==1:
-                    to_burn[0, i] = (num & (1<<j)) >> j
-                    j += 1
-            
-            #burn vertices & add resultant timestep to timesteps_lis
-            burn_idx = np.asarray(np.logical_and(burnable, to_burn), dtype=np.bool)
-            self.burned[np.reshape(burn_idx, -1)] = True
-            timesteps_lis.append(dm_env.transition(reward=-1.0, observation=self._observation()))
-            
-            #revert burns for checking other possible burns
-            self.burned[np.reshape(burn_idx, -1)] = False
-        return timesteps_lis        
+        else:
+        
+            #Loop over all possible to_burn
+            for num in range(2^np.sum(burnable)):
+                to_burn = burnable.copy()
+                
+                #Make a to_burn according to bits of to_burn
+                j = 0
+                for i in range(to_burn.shape[1]):
+                    if to_burn[0, i]==1:
+                        to_burn[0, i] = (num & (1<<j)) >> j
+                        j += 1
+                
+                #burn vertices & add resultant timestep to timesteps_lis
+                burn_idx = np.asarray(np.logical_and(burnable, to_burn), dtype=np.bool)
+                self.burned[np.reshape(burn_idx, -1)] = True
+                yield dm_env.transition(reward=-1.0, observation=self._observation())
+                
+                #revert burns for checking other possible burns
+                self.burned[np.reshape(burn_idx, -1)] = False
 
     def step(self, action: np.ndarray):
         """Updates the environment according to the action."""

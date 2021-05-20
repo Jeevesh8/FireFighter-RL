@@ -19,8 +19,8 @@ class policy_iter_agent():
 
         for (i,elem) in enumerate(defendable):
             if elem:
-                return ([np.concatenate([[0]*i+[0], elem]) for elem in self._get_all_actions(defendable[i+1:], n_defend)]+
-                        [np.concatenate([[0]*i+[1], elem]) for elem in self._get_all_actions(defendable[i+1:], n_defend-1)])
+                return ([np.array(np.concatenate([[0]*i+[0], elem]), dtype=np.bool) for elem in self._get_all_actions(defendable[i+1:], n_defend)]+
+                        [np.array(np.concatenate([[0]*i+[1], elem]), dtype=np.bool) for elem in self._get_all_actions(defendable[i+1:], n_defend-1)])
             else:
                 continue
         
