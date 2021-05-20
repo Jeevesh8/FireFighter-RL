@@ -12,21 +12,23 @@ from env import FireFighter
 from agents.policy_iter import policy_iter_agent
 from agents.utils import numpy_dict
 
+
 def get_all_states(env, agent):
     states = []
 
     def _get_all_states(env, agent, timestep):
         nonlocal states
         begin_state = timestep.observation[1:]
-        
+
         visited = False
         for state in states:
-            if (np.all(state[0]==begin_state[0]) and 
-                np.all(state[1]==begin_state[1])):
-                
-                visited=True
+            if np.all(state[0] == begin_state[0]) and np.all(
+                state[1] == begin_state[1]
+            ):
+
+                visited = True
                 break
-        
+
         if not visited:
             states.append(begin_state)
             if timestep.last():
@@ -37,9 +39,10 @@ def get_all_states(env, agent):
                 env.set_state(begin_state)
                 for timestep in env.all_possible_env_states(action):
                     _get_all_states(env, agent, timestep)
-            
+
     _get_all_states(env, agent, env.reset())
     return states
+
 
 def policy_evaluation(env, agent, value_func: dict):
     while True:
@@ -81,7 +84,7 @@ def policy_improvement(env, agent, value_func: dict):
 def policy_iteration(env, agent):
     states = get_all_states(env, agent)
     value_func = numpy_dict()
-    
+
     for state in states:
         value_func[state] = np.random.randint(-3, 0)
 
