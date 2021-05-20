@@ -43,7 +43,7 @@ def get_all_states(env, agent):
                 env.set_state(begin_state)
                 for possible_timestep in env.all_possible_env_states(action):
                     _get_all_states(env, agent, possible_timestep, i+1)
-                    print("Checking next env stage for action: ", j)
+                    print("\t"*i+"Checking next env stage for action: ", j)
                 env.set_state(begin_state)
     _get_all_states(env, agent, env.reset())
     return states
