@@ -2,7 +2,7 @@
 Implementation of some Reinforcement Learning algorithms for the Fire Fighter problem on graphs
 
 ## An Example Of Learned strategy
-The model is allowed to only defend two vertices at a timestep.
+The model is allowed to only defend two vertices at a timestep. Blue vertices denote defended ones, yellow the burning ones and purple ones are neither burning, nor defended. 
 ### With burn probability 0.5
 
 The image below shows the decisions taken by the learned model in the various states.
